@@ -1,0 +1,104 @@
+### Extensão "REST Client" do VS Code
+// Como esse arquivo foi um ambiente de testes utilizado pelos desenvolvedores, as informações colocadas aqui não devem ser levadas a sério.
+
+@base = http://localhost:8000/editora
+
+### Cadastro novo autor - 201
+POST {{base}}/api/autores
+Content-Type: application/json
+
+{
+  "nome": "Jilson Patias",
+  "email": "cemporcentohumano@real.com",
+  "biografia": "Pesquisador em Patologia."
+}
+
+### Cadastro novo autor com email já cadastrado - 409
+POST {{base}}/api/autores
+Content-Type: application/json
+
+{
+  "nome": "Melissa P. Tenku",
+  "email": "cemporcentohumano@real.com"
+}
+
+### Lista autores - 200
+GET {{base}}/api/autores
+
+### Busca autor p/ id (1) - 200 (404 se 999)
+GET {{base}}/api/autores/1
+
+### Cria artigo relacionando autor - 201
+POST {{base}}/
+Content-Type: application/json
+
+{
+  "titulo": "O impacto econômico das políticas de distribuição de pães em lagos para patos.",
+  "resumo": "O artigo usa da pesquisa para pesquisar sobre pães e patos, o que, se analisarmos de maneira técnica é bem legal.",
+  "publicado": "false",
+  "autor": { "id": 1 }
+}
+
+### Cria artigo com autor que não existe - 404
+POST {{base}}/
+Content-Type: application/json
+
+{
+  "titulo": "Como populações elitizadas se beneficiam substituindo seus cérebros em repolhos.",
+  "resumo": "Gente previlegiada e sem consciência de classe é burra; Sem autor válido.",
+  "autor": { "id": 999 }
+}
+
+### Cria artigo sem autor - 400
+POST {{base}}/
+Content-Type: application/json
+
+{
+  "titulo": "Qual caractere alfabético sucede o popularmente conhecido como \"B\"",
+  "resumo": "Letra C; Faltou o autor."
+}
+
+
+### Busca dos artigos do autor p/ id (1) - 200
+GET {{base}}/api/autores/1/artigos
+
+### Só os publicados do autor por id (1) -> 200
+GET {{base}}/api/autores/1/artigos?publicado=true
+
+### Lista todos os artigos - 200
+GET {{base}}/
+
+### Busca por título (palavras-chave) - 200
+GET {{base}}/?titulo=impacto
+
+### Artigos publicados - 200
+GET {{base}}/publicado
+
+### Atualiza artigo - 200
+PUT {{base}}/1
+Content-Type: application/json
+
+{
+  "titulo": "O impacto econômico das políticas de distribuição de pães em lagos para patos 2.",
+  "resumo": "O mesmo, só que de novo.",
+  "publicado": "true"
+}
+
+### Excluir autor com artigos - 409
+DELETE {{base}}/api/autores/1
+
+### Excluir artigo - 204
+DELETE {{base}}/1
+
+### Excluir autor sem artigos - 204
+DELETE {{base}}/api/autores/1
+
+### Apagar TODOS os artigos - 204
+DELETE http://localhost:8000/editora/
+
+### Apagar TODOS os autores - 204/409
+DELETE http://localhost:8000/editora/api/autores
+
+Para resetar a contagem de ids, vá no pgAdmin e dê o comando:
+ALTER TABLE artigo ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE autor  ALTER COLUMN id RESTART WITH 1;
